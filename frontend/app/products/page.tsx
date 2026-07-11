@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Product, get_products_api } from "../lib/api";
 import ProductCard from "../components/productcard";
+import Header from "../components/header";
+import Footer from "../components/footer";
 
 export default function ProductsPage() {
 
@@ -38,6 +40,7 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <Header/>
 
       <h1 className="text-4xl font-bold text-center py-10">
         All Products
@@ -48,6 +51,7 @@ export default function ProductsPage() {
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
+      <Footer/>
 
     </div>
   );

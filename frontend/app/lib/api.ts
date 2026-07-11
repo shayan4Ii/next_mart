@@ -160,6 +160,13 @@ function formatPrice(price: string) {
     return "$" + number.toFixed(2);
 }
 
+async function home_api() {
+    const response = await fetch(`${API_BASE_URL}/api/home/`, {
+        credentials: "include",
+    });
+
+    return response;
+}
 
 export {
     signup_api,
@@ -168,6 +175,7 @@ export {
     get_products_api,
     resolveImageUrl,
     formatPrice,
+    home_api,
 };
 
 export type { Product };

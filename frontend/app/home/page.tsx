@@ -1,7 +1,12 @@
+'use client';
+
 import Image from "next/image";
 import Header from "../components/header";
 import Footer from "../components/footer";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useEffect } from "react";
+import { home_api } from "../lib/api";
 
 
 const CATEGORIES = [
@@ -30,9 +35,28 @@ const FEATURES = [
   },
 ];
 
-
 export default function HomePage() {
+  const router = useRouter();
+  useEffect(() => {
+    async function checkAuth() {
+        try {
+            const response = await home_api();
 
+            if (response.status === 401 || response.status === 403) {
+                router.push("/login");
+                return;
+            }
+
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error(error);
+            router.push("/login");
+        }
+    }
+
+    checkAuth();
+}, [router]);
   return (
 
     <div className="min-h-screen bg-gray-50 text-gray-900">

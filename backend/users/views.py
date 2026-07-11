@@ -41,6 +41,10 @@ def Signup(request):
         status=201
     )
 
+from django.contrib.auth import authenticate, login
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 @api_view(["POST"])
 def Login(request):
     username = request.data["username"]
@@ -50,25 +54,28 @@ def Login(request):
         username=username,
         password=password,
     )
+
     if user is not None:
         login(request, user)
-        return Response({
-            "success" : True,
-            "message" : "Login Successful",
-        }, status=200)
-    
-    return Response({
-        "success" : False,
-        "message" : "Invalid username or password",
 
-    }, status=401)
+        return Response({
+            "success": True,
+            "message": "Login Successful",
+            "username": request.user.username,
+        }, status=200)
+
+    else:
+        return Response({
+            "success": False,
+            "message": "Invalid username or password",
+        }, status=401)
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def Home(request):
     return Response({
         "message" : "Welcome",
-        "username": request.username,
+        "username": request.user.username,
     })
 
 @api_view(["POST"])
