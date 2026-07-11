@@ -1,7 +1,10 @@
-from django.contrib.auth.models import User, authenticate, login
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
 
 
 
@@ -49,12 +52,14 @@ def Login(request):
     if user is not None:
         login(request, user)
         return Response({
-            "message" : "Login Successful"
-            "username" : user.username,
+            "success" : True,
+            "message" : "Login Successful",
         }, status=200)
     
     return Response({
+        "success" : False,
         "message" : "Invalid username or password",
+        "username" : request.username,
 
     }, status=401)
 
@@ -63,5 +68,25 @@ def Login(request):
 def Home(request):
     return Response({
         "message" : "Welcome",
-        "username": request.user.username,
+        "username": request.username,
     })
+
+@api_view(["POST"])
+def Logout(request):
+    logout(request)
+
+    response = Response({
+        "success": True
+    })
+
+    response.delete_cookie("sessionid")
+    response.delete_cookie("csrftoken")
+
+    return response
+
+
+@ensure_csrf_cookie
+def csrf(request):
+    return JsonResponse({"success": True})
+
+
