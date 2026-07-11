@@ -10,9 +10,10 @@ from django.http import JsonResponse
 
 @api_view(["POST"])
 def Signup(request):
-    username = request.data["username"]
+
+    username = request.data["signupusername"]
     email = request.data["email"]
-    password = request.data["password"]
+    password = request.data["signuppassword"]
 
     if User.objects.filter(username=username).exists():
         return Response(
@@ -25,7 +26,7 @@ def Signup(request):
             {"error": "Email already exists"},
             status=400
         )
-    
+
     user = User.objects.create_user(
         username=username,
         email=email,
@@ -59,7 +60,6 @@ def Login(request):
     return Response({
         "success" : False,
         "message" : "Invalid username or password",
-        "username" : request.username,
 
     }, status=401)
 

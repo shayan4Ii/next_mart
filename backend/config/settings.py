@@ -81,14 +81,13 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "mywebsite",
+        "NAME": "nextmart",
         "USER": "admin",
         "PASSWORD": "Password123@",
-        "HOST": "localhost",
+        "HOST": "mysql",
         "PORT": "3306",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
