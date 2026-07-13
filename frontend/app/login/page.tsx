@@ -22,6 +22,7 @@ export default function LoginPage() {
 
       if (data.success) {
         localStorage.setItem("username", data.username);
+        localStorage.setItem("email", data.email);
         router.push("/home");
       } else {
         setError("Invalid username or password");

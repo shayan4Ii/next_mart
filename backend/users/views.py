@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
+from django.contrib.auth import update_session_auth_hash
 
 
 
@@ -62,6 +63,7 @@ def Login(request):
             "success": True,
             "message": "Login Successful",
             "username": request.user.username,
+            "email" : request.user.email,
         }, status=200)
 
     else:
@@ -76,6 +78,7 @@ def Home(request):
     return Response({
         "message" : "Welcome",
         "username": request.user.username,
+        "email": request.user.email,
     })
 
 @api_view(["POST"])
@@ -97,3 +100,26 @@ def csrf(request):
     return JsonResponse({"success": True})
 
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def changepass(request):
+    oldpassword = request.data['oldpassword']
+    newpassword = request.data['newpassword']
+    user = request.user
+
+    if not user.check_password(oldpassword):
+        return Response({
+            "success" : False,
+            "message" : "Invalid password",
+        }, status=400)
+    
+
+    user.set_password(newpassword)
+    user.save()
+
+    update_session_auth_hash(request, user)
+
+    return Response({
+        "success" : True,
+        "message" : "password changed successfully!",
+    }, status=200)

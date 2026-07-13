@@ -4,8 +4,9 @@ async function getCSRFToken() {
         method: "GET",
         credentials: "include",
     });
-}
+    
 
+}
 
 // Get a specific cookie value from the browser
 function getCookie(name: string) {
@@ -166,6 +167,30 @@ async function home_api() {
     return response;
 }
 
+async function change_password_api(oldpassword: string, newpassword: string) {
+    await getCSRFToken();
+    const csrftoken = getCookie("csrftoken");
+    const response = await(fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/change_password/`, {
+        method:"POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+             "X-CSRFToken": csrftoken,
+
+        },
+        body: JSON.stringify({
+            oldpassword,
+            newpassword,
+
+        }),
+    })
+
+    );
+    const data = await response.json();
+    console.log("your data: ", data)
+    return data;
+}
+
 export {
     signup_api,
     login_api,
@@ -174,6 +199,7 @@ export {
     resolveImageUrl,
     formatPrice,
     home_api,
+    change_password_api,
 };
 
 export type { Product };

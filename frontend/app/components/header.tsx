@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { logout } from "../lib/api";
+import Profile from "./profile";
 
 const NAV_LINKS = [
   { label: "Home", href: "#" },
@@ -14,17 +15,22 @@ const NAV_LINKS = [
 
 export default function Header() {
   const router = useRouter();
-
   const [username, setUsername] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  
 
 
   useEffect(() => {
     const storedUser = localStorage.getItem("username");
+    const storedEmail = localStorage.getItem("email");
 
     if (storedUser) {
       setUsername(storedUser);
+    }
+    if (storedEmail){
+      setEmail(storedEmail); 
     }
   }, []);
 
@@ -38,6 +44,7 @@ export default function Header() {
       await logout();
 
       localStorage.removeItem("username");
+      localStorage.removeItem("email");
 
       router.push("/login");
 
@@ -76,9 +83,10 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
 
-          <span className="hidden sm:block text-sm text-gray-500">
-            {username ? `Hi, ${username}` : "Welcome, Guest"}
-          </span>
+          <Profile
+            username={username}
+            email={email}
+          />
 
 
           <button
