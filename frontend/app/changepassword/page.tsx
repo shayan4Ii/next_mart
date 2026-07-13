@@ -13,14 +13,12 @@ export default function ChangePasswordPage() {
     const [newPassword, setNewPassword] = useState("");
 
     const [message, setMessage] = useState("");
+    const [error, setError] = useState(false);
 
 
-    async function handleSubmit(
-        e: React.FormEvent
-    ) {
+    async function handleSubmit(e: React.FormEvent) {
 
         e.preventDefault();
-
 
         const data = await change_password_api(
             oldPassword,
@@ -29,6 +27,8 @@ export default function ChangePasswordPage() {
 
 
         if(data.success){
+
+            setError(false);
 
             setMessage(
                 "Password changed successfully"
@@ -41,6 +41,8 @@ export default function ChangePasswordPage() {
         }
         else{
 
+            setError(true);
+
             setMessage(data.message);
 
         }
@@ -50,23 +52,32 @@ export default function ChangePasswordPage() {
 
     return (
 
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+
+
+            {/* Message above card */}
+            {message && (
+                <div
+                    className={`mb-4 p-3 rounded w-96 text-center ${
+                        error
+                        ? "bg-red-100 text-red-600"
+                        : "bg-green-100 text-green-600"
+                    }`}
+                >
+                    {message}
+                </div>
+            )}
+
+
 
             <form
                 onSubmit={handleSubmit}
-                className="bg-white p-8 rounded-lg shadow-lg w-96"
+                className="bg-white p-8 rounded-lg shadow-lg w-96 text-black"
             >
 
-                <h1 className="text-2xl font-bold mb-5">
+                <h1 className="text-2xl font-bold mb-5 text-black">
                     Change Password
                 </h1>
-
-
-                {message && (
-                    <p className="mb-4 text-blue-600">
-                        {message}
-                    </p>
-                )}
 
 
                 <input
@@ -76,7 +87,7 @@ export default function ChangePasswordPage() {
                     onChange={(e)=>
                         setOldPassword(e.target.value)
                     }
-                    className="w-full border p-2 mb-4"
+                    className="w-full border p-2 mb-4 text-black placeholder-gray-500"
                     required
                 />
 
@@ -88,7 +99,7 @@ export default function ChangePasswordPage() {
                     onChange={(e)=>
                         setNewPassword(e.target.value)
                     }
-                    className="w-full border p-2 mb-4"
+                    className="w-full border p-2 mb-4 text-black placeholder-gray-500"
                     required
                 />
 

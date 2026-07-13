@@ -5,8 +5,12 @@ import { Product, get_products_api } from "../lib/api";
 import ProductCard from "../components/productcard";
 import Header from "../components/header";
 import Footer from "../components/footer";
+import { useRouter } from "next/navigation";
+
+
 
 export default function ProductsPage() {
+  const router = useRouter();
 
   // Products ki list yahan store hogi
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,13 +21,24 @@ export default function ProductsPage() {
   // Page load hote hi ek dafa products mangwao
   useEffect(() => {
     async function loadProducts() {
-      const data = await get_products_api();
-      setProducts(data);
+
+      const response = await get_products_api();
+
+      if (
+        response.status === 401 ||
+        response.status === 403
+      ) {
+        router.push("/login");
+        return;
+      }
+
+      setProducts(response.data);
       setLoading(false);
     }
 
     loadProducts();
-  }, []);
+
+  }, [router]);
 
 
   // Jab tak data nahi aaya, "Loading..." dikhao
@@ -36,6 +51,7 @@ export default function ProductsPage() {
   if (products.length === 0) {
     return <h1 className="p-10 text-center">No products found.</h1>;
   }
+ 
 
 
   return (

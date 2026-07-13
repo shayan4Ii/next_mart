@@ -118,22 +118,28 @@ interface Product {
 // Fetch all products from backend
 async function get_products_api() {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/`, {
-            method: "GET",
-            credentials: "include",
-        });
-
-        if (!response.ok) {
-            console.log("Products fetch failed:", response.status);
-            return [];
-        }
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/products/`,
+            {
+                method: "GET",
+                credentials: "include",
+            }
+        );
 
         const data = await response.json();
-        return data;
+
+        return {
+            status: response.status,
+            data: data,
+        };
 
     } catch (error) {
         console.log("Products fetch error:", error);
-        return [];
+
+        return {
+            status: 500,
+            data: [],
+        };
     }
 }
 
