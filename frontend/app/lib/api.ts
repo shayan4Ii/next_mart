@@ -1,8 +1,6 @@
-const API_BASE_URL = "http://localhost:8000";
-
 // Get CSRF token from Django
 async function getCSRFToken() {
-    await fetch(`${API_BASE_URL}/api/csrf/`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/csrf/`, {
         method: "GET",
         credentials: "include",
     });
@@ -28,7 +26,7 @@ async function signup_api(username: string, email: string, password: string) {
         await getCSRFToken();
         const csrftoken = getCookie("csrftoken");
 
-        const response = await fetch(`${API_BASE_URL}/api/signup/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/signup/`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -58,7 +56,7 @@ async function login_api(username: string, password: string) {
         await getCSRFToken();
         const csrftoken = getCookie("csrftoken");
 
-        const response = await fetch(`${API_BASE_URL}/api/login/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login/`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -86,7 +84,7 @@ async function logout() {
     try {
         const csrftoken = getCookie("csrftoken");
 
-        const response = await fetch(`${API_BASE_URL}/api/logout/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/logout/`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -119,7 +117,7 @@ interface Product {
 // Fetch all products from backend
 async function get_products_api() {
     try {
-        const response = await fetch(`${API_BASE_URL}/api/products/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products/`, {
             method: "GET",
             credentials: "include",
         });
@@ -145,7 +143,7 @@ function resolveImageUrl(path: string | null) {
         return null;
     }
 
-    return `${API_BASE_URL}${path}`;
+    return `${process.env.NEXT_PUBLIC_API_URL}${path}`;
 }
 
 
@@ -161,7 +159,7 @@ function formatPrice(price: string) {
 }
 
 async function home_api() {
-    const response = await fetch(`${API_BASE_URL}/api/home/`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/home/`, {
         credentials: "include",
     });
 
