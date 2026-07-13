@@ -75,10 +75,11 @@ def Login(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def Home(request):
+    user = request.user
     return Response({
         "message" : "Welcome",
-        "username": request.user.username,
-        "email": request.user.email,
+        "username": user.username,
+        "email": user.email,
     })
 
 @api_view(["POST"])
