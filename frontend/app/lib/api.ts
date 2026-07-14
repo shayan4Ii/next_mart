@@ -114,6 +114,15 @@ interface Product {
     created_at: string;
 }
 
+interface CartItem {
+    id: number;
+    product: number;
+    product_name: string;
+    product_price: string;
+    product_image: string | null;
+    quantity: number;
+    subtotal: string;
+}
 
 // Fetch all products from backend
 async function get_products_api() {
@@ -197,6 +206,111 @@ async function change_password_api(oldpassword: string, newpassword: string) {
     return data;
 }
 
+async function add_to_cart_api(product_id: number) {
+    try {
+        await getCSRFToken();
+        const csrftoken = getCookie("csrftoken");
+
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/cart/add/`,
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrftoken,
+                },
+                body: JSON.stringify({
+                    product_id,
+                }),
+            }
+        );
+
+        const data = await response.json();
+
+        return data;
+
+    } catch (error) {
+        console.log("Add to cart error:", error);
+        throw error;
+    }
+}
+
+async function get_cart_api() {
+    try {
+
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/cart/`,
+            {
+                method: "GET",
+                credentials: "include",
+            }
+        );
+
+
+        const data = await response.json();
+
+        return data;
+
+
+    } catch (error) {
+
+        console.log("Cart fetch error:", error);
+
+        return [];
+
+    }
+}
+async function delete_cart_item_api(id: number) {
+
+    try {
+
+        await getCSRFToken();
+
+        const csrftoken = getCookie("csrftoken");
+
+
+        const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/cart/delete/${id}/`,
+            {
+                method: "DELETE",
+
+                credentials: "include",
+
+                headers: {
+                    "X-CSRFToken": csrftoken || "",
+                },
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message || "Failed to delete cart item"
+            );
+
+        }
+
+
+        return data;
+
+
+    } catch (error) {
+
+        console.error(
+            "Delete cart item error:",
+            error
+        );
+
+
+        throw error;
+
+    }
+}
 export {
     signup_api,
     login_api,
@@ -206,6 +320,10 @@ export {
     formatPrice,
     home_api,
     change_password_api,
+    add_to_cart_api,
+    get_cart_api,
+    delete_cart_item_api,
+    
 };
 
-export type { Product };
+export type { Product, CartItem };
